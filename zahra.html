@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تولدت مبارک زهرا خانومیییي! ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- کتابخانه کنفتی (کاغذ رنگی) -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-deep: #0b1329;
+            --cream: #f4f1ea;
+            --sage-green: #7a9a85;
+            --accent-pink: #e8a598;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--cream);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 1s ease, color 1s ease;
+        }
+
+        /* حالت روشن و پرزرق‌وبرق بعد از کلیک */
+        body.surprise-active {
+            background-color: #ffffff;
+            color: #2c3531;
+        }
+
+        /* صفحه اولیه ورود */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0b1329;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .welcome-screen h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: #f4f1ea;
+            margin-bottom: 24px;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #7a9a85, #52796f);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(122, 154, 133, 0.4);
+            transition: transform 0.3s ease;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        .btn-start:hover {
+            transform: scale(1.05);
+        }
+
+        /* محتوای اصلی سایت بعد از کلیک */
+        .main-content {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease;
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            justify-content: space-between;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ستون‌های عکس متحرک در دو طرف (حتی در موبایل با سایز متناسب) */
+        .photo-column {
+            width: 120px;
+            height: 100vh;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+            .photo-column {
+                width: 180px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .photo-column {
+                width: 220px;
+            }
+        }
+
+        .photo-track {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px 0;
+        }
+
+        /* حرکت ستون چپ به بالا */
+        .track-up {
+            animation: scrollUp 25s linear infinite;
+        }
+
+        /* حرکت ستون راست به پایین */
+        .track-down {
+            animation: scrollDown 25s linear infinite;
+        }
+
+        @keyframes scrollUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        @keyframes scrollDown {
+            0% { transform: translateY(-50%); }
+            100% { transform: translateY(0); }
+        }
+
+        .photo-card {
+            width: 100px;
+            height: 130px;
+            background: #f0ebd8;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 2px solid #fff;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .photo-card {
+                width: 150px;
+                height: 190px;
+                border-radius: 10px;
+                border: 3px solid #fff;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .photo-card {
+                width: 180px;
+                height: 230px;
+                border-radius: 12px;
+                border: 4px solid #fff;
+            }
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* بخش متن وسط صفحه */
+        .center-container {
+            flex: 1;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 40px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 2;
+        }
+
+        @media (min-width: 768px) {
+            .center-container {
+                padding: 60px 20px;
+            }
+        }
+
+        .card-letter {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .card-letter {
+                padding: 40px 30px;
+                border-radius: 24px;
+                margin-bottom: 30px;
+            }
+        }
+
+        .card-letter h2 {
+            font-size: 1.5rem;
+            color: #2c3531;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        @media (min-width: 768px) {
+            .card-letter h2 {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+            }
+        }
+
+        .card-letter p {
+            font-size: 0.95rem;
+            line-height: 2.1;
+            color: #4a5568;
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        @media (min-width: 768px) {
+            .card-letter p {
+                font-size: 1.1rem;
+                line-height: 2.3;
+                margin-bottom: 18px;
+            }
+        }
+
+        .signature {
+            font-weight: 700;
+            color: #7a9a85;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        /* کادر پایانی گواهینامه */
+        .driving-box {
+            background: linear-gradient(135deg, #ffe5e0, #fff0ed);
+            border: 2px dashed #e8a598;
+            border-radius: 14px;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(232, 165, 152, 0.2);
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .driving-box p {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #c05621;
+            margin: 0;
+        }
+
+        @media (min-width: 768px) {
+            .driving-box p {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- موزیک زمینه (تکرار خودکار با loop) -->
+    <audio id="bgMusic" loop>
+        <source src="my-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- صفحه اولیه ورود -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <h1>سلام زهرا خانومییییی...</h1>
+        <button class="btn-start" id="startBtn">بزن رو دکمه‌ی زیر ✨</button>
+    </div>
+
+    <!-- بدنه اصلی سایت بعد از کلیک -->
+    <div class="main-content" id="mainContent">
+        
+        <!-- ستون عکس چپ (بالا رونده - عکس‌های ۱ تا ۱۰) -->
+        <div class="photo-column">
+            <div class="photo-track track-up">
+                <div class="photo-card"><img src="photo1.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo2.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo3.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo4.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo5.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo6.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo7.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo8.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo9.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo10.jpg" alt="Memory"></div>
+                <!-- تکرار برای پیوستگی حرکت -->
+                <div class="photo-card"><img src="photo1.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo2.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo3.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo4.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo5.jpg" alt="Memory"></div>
+            </div>
+        </div>
+
+        <!-- محتوای اصلی و نامه -->
+        <div class="center-container">
+            <div class="card-letter">
+                <h2>زهرا جانِ دلم، تولدت مبارک! 🎉</h2>
+                <p>تو ۱۸ ساله شدی. می‌خواستم این روز رو برات خاص کنم و بدونی که خیلی برام ارزشمندی و من خیلی دوستت دارم.</p>
+                <p>تو بهترین دوست و همراه برای ماجراجویی هستی؛ با اینکه خیلی لسی، با اینکه دقیقاً نمی‌دونی اهدافت چیه و با اینکه گاهی ناامیدی، من هنوز هم با تمام این نقص‌ها دوستت دارم و بهت افتخار می‌کنم.</p>
+                <p>امیدوارم به اهدافت برسی، پولدار بشی و این رو هم بدون که تو زیباترین دختری هستی که من دیدم؛ چه از درون و چه از بیرون. مطمئنم اگه به اهدافت پایبند باشی، به حرف مردم اهمیت ندی و کارهای مفید بکنی، روزی به جایی می‌رسی که تصورشم نمی‌کردی.</p>
+                <div class="signature">بوسس، از طرف رقیه 💛</div>
+            </div>
+
+            <!-- کادر پایانی گواهینامه -->
+            <div class="driving-box">
+                <p>چراااا نشستی برو گواهینامتو بگیرر پاشوووو! 🚗💨</p>
+            </div>
+        </div>
+
+        <!-- ستون عکس راست (پایین رونده - عکس‌های ۱۱ تا ۲۰) -->
+        <div class="photo-column">
+            <div class="photo-track track-down">
+                <div class="photo-card"><img src="photo11.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo12.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo13.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo14.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo15.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo16.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo17.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo18.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo19.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo20.jpg" alt="Memory"></div>
+                <!-- تکرار برای پیوستگی حرکت -->
+                <div class="photo-card"><img src="photo11.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo12.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo13.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo14.jpg" alt="Memory"></div>
+                <div class="photo-card"><img src="photo15.jpg" alt="Memory"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- اسکریپت اجرای افکت‌ها و موزیک -->
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const mainContent = document.getElementById('mainContent');
+        const body = document.body;
+        const bgMusic = document.getElementById('bgMusic');
+
+        startBtn.addEventListener('click', () => {
+            // پخش موزیک به صورت خودکار
+            bgMusic.play().catch(e => console.log("Audio play prevented"));
+
+            // محو کردن صفحه خوش‌آمدگویی و تغییر تم به سفیدِ درخشان
+            welcomeScreen.classList.add('hidden');
+            body.classList.add('surprise-active');
+            mainContent.classList.add('visible');
+
+            // انفجار کاغذ رنگی (Confetti) پرجلوه
+            var duration = 7 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 40, spread: 360, ticks: 100, zIndex: 1000, colors: ['#7a9a85', '#e8a598', '#f39c12', '#3498db', '#e74c3c'] };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+                var particleCount = 60 * (timeLeft / duration);
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.4), y: Math.random() - 0.2 } });
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.6, 0.9), y: Math.random() - 0.2 } });
+            }, 250);
+        });
+    </script>
+</body>
+</html>
